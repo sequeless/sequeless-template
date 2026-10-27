@@ -1,0 +1,42 @@
+name: Template smoke
+
+# Proves a repo made from this template builds after scripts/init-repo.sh runs on it (spec 2, §7).
+# The init script deletes this file from generated repos.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  smoke:
+    name: Init a copy and build it
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: PACKAGES_READ_TOKEN
+      - name: Copy the template and run its init script on the copy
+        run: |
+          cp -R . "$RUNNER_TEMP/smoke"
+          cd "$RUNNER_TEMP/smoke"
+          rm -rf .git
+          git init -q -b main
+          git add -A
+          git -c user.name=ci -c user.email=ci@localhost commit -q -m "chore: copy for smoke test"
+          ./scripts/init-repo.sh smoke
+      - name: Build the initialised copy
+        working-directory: ${{ runner.temp }}/smoke
+        env:
+          PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}
+        run: ./mvnw -B verify
