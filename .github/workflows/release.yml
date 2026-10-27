@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  release:
+    # Skips the template repo itself, which is never released (spec 2, §6).
+    if: ${{ github.repository != 'sequeless/sequeless-template' }}
+    uses: sequeless/sequeless-build/.github/workflows/maven-release.yml@workflows-vX.Y.Z
+    secrets: inherit

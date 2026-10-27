@@ -1,0 +1,24 @@
+name: PR title
+
+# Local to each repo until two repos carry it unchanged, then it moves to sequeless-build.
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Lint the PR title as a Conventional Commit
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          npm install --no-save @commitlint/cli@^19 @commitlint/config-conventional@^19
+          echo "$PR_TITLE" | npx --no-install commitlint --config commitlint.config.mjs

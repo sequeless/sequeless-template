@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Pinned to the first release of sequeless-build-parent (spec 1). Red until that release exists. -->
+  <parent>
+    <groupId>org.sequeless</groupId>
+    <artifactId>sequeless-build-parent</artifactId>
+    <version>0.1.0</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>org.sequeless</groupId>
+  <artifactId>template-core</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <name>template-core</name>
+  <description>Placeholder library module. Renamed by scripts/init-repo.sh.</description>
+
+  <properties>
+    <!-- Opts in to the parent's enforcer ban on Spring, Jena and Lombok (spec 1, §5). -->
+    <sequeless.enforcer.core.skip>false</sequeless.enforcer.core.skip>
+    <!-- Not deployed from the template repo itself (spec 2, §6). -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <assertj.version>3.27.7</assertj.version>
+    <junit.version>6.1.3</junit.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/sequeless/*</url>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spec 1: library repos import junit-bom in their own POM. The parent does not manage JUnit. -->
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
