@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   analyze:
-    uses: sequeless/sequeless-build/.github/workflows/maven-codeql.yml@workflows-vX.Y.Z
+    uses: sequeless/sequeless-build/.github/workflows/maven-codeql.yml@workflows-v0.1.1
     with:
       languages: java-kotlin
     secrets: inherit

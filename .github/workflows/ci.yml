@@ -12,12 +12,12 @@ permissions:
 
 jobs:
   build:
-    uses: sequeless/sequeless-build/.github/workflows/maven-ci.yml@workflows-vX.Y.Z
+    uses: sequeless/sequeless-build/.github/workflows/maven-ci.yml@workflows-v0.1.1
     secrets: inherit
 
   sonar:
     needs: build
-    uses: sequeless/sequeless-build/.github/workflows/maven-sonar.yml@workflows-vX.Y.Z
+    uses: sequeless/sequeless-build/.github/workflows/maven-sonar.yml@workflows-v0.1.1
     with:
       sonar-organization: sequeless
     secrets: inherit

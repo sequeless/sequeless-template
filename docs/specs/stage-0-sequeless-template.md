@@ -48,7 +48,7 @@ picks different names, use spec 1's names and update this table. Don't diverge.
 | Parent POM | `org.sequeless:sequeless-build-parent` (spec-01:42-48: not `sequeless-parent`, which is the prototype root's name), released version pinned (no SNAPSHOT on `main`) |
 | Read repository id / URL | `github` → `https://maven.pkg.github.com/sequeless/*`, credentials from `PACKAGES_READ_TOKEN` (org secret, #54) |
 | Deploy | The parent's `distributionManagement` (spec-01:218-227) deploys to `https://maven.pkg.github.com/sequeless/${sequeless.github.repository}`, with `GITHUB_TOKEN` (`packages: write`) from `maven-release.yml`. The template sets no `distributionManagement` of its own. |
-| Reusable workflows | `sequeless/sequeless-build/.github/workflows/maven-{ci,codeql,sonar,release}.yml` (spec-01:114-117), called with `secrets: inherit` and pinned to `@workflows-vX.Y.Z` (spec-01:313-314; Renovate's `github-actions` manager bumps the ref) |
+| Reusable workflows | `sequeless/sequeless-build/.github/workflows/maven-{ci,codeql,sonar,release}.yml` (spec-01:114-117), called with `secrets: inherit` and pinned to `@workflows-v0.1.1` (spec-01:313-314; Renovate's `github-actions` manager bumps the ref; the `vX.Y.Z` placeholder is not a valid ref and made every workflow fail at startup) |
 | Renovate preset | `github>sequeless/sequeless-build` (`default.json` at the repo root, spec-01:107-108; the preset is not versioned, spec-01:313-316) |
 | Core-module marker | whatever spec 1's parent uses to switch on the enforcer `bannedDependencies` (no Spring, Jena, Lombok) for a core module. `template-core` opts in. |
 | Library vs app | libraries get `--release 21` from the parent by default. An app module overrides it to 25 (#17 §1). |
@@ -122,7 +122,7 @@ None in existing code. The template ships the placeholder package `org.sequeless
 sequeless-template/
 ├── pom.xml               aggregator only: <packaging>pom</packaging>, <modules>, never released
 └── template-core/        placeholder library module
-    ├── pom.xml           <parent> = org.sequeless:sequeless-build-parent, pinned 0.1.0, <relativePath/>; module version 0.1.0-SNAPSHOT
+    ├── pom.xml           <parent> = org.sequeless:sequeless-build-parent, pinned 0.1.2, <relativePath/>; module version 0.1.0-SNAPSHOT
     └── src/
         ├── main/java/org/sequeless/template/{api,spi,internal}/package-info.java
         └── test/java/org/sequeless/template/BoundaryRulesTest.java

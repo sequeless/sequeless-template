@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Pinned to the first release of sequeless-build-parent (spec 1). Red until that release exists. -->
+  <!-- Pinned to a released sequeless-build-parent (spec 1). Renovate bumps it. 0.1.0 was never published to GitHub Packages. -->
   <parent>
     <groupId>org.sequeless</groupId>
     <artifactId>sequeless-build-parent</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.2</version>
     <relativePath/>
   </parent>
 
