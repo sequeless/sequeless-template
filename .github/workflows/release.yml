@@ -13,5 +13,5 @@ jobs:
   release:
     # Skips the template repo itself, which is never released (spec 2, §6).
     if: ${{ github.repository != 'sequeless/sequeless-template' }}
-    uses: sequeless/sequeless-build/.github/workflows/maven-release.yml@workflows-v0.1.1
+    uses: sequeless/sequeless-build/.github/workflows/maven-release.yml@workflows-v0.1.2
     secrets: inherit

@@ -12,5 +12,5 @@ permissions:
 
 jobs:
   build:
-    uses: sequeless/sequeless-build/.github/workflows/maven-ci.yml@workflows-v0.1.1
+    uses: sequeless/sequeless-build/.github/workflows/maven-ci.yml@workflows-v0.1.2
     secrets: inherit
