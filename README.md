@@ -20,3 +20,14 @@ The init script renames the placeholders (`template-core`, `org.sequeless.templa
 
 Until `sequeless-build` makes its first release, the parent, workflows and Renovate preset
 cannot resolve, so CI stays red. That is expected (see docs/extraction in the prototype repo).
+
+## Local setup
+
+The parent POM comes from GitHub Packages, so export a token with `read:packages` as
+`GITHUB_PACKAGES_TOKEN` before any `mvn` run. The `github` server in `~/.m2/settings.xml` reads it
+as `<password>${env.GITHUB_PACKAGES_TOKEN}</password>`; `sequeless-build`'s README has the full entry.
+
+If `spotless:check` fails at `verify`, run `mvn spotless:apply`, then `mvn verify` again. The parent
+rejects a POM that is valid XML but not in the formatter's layout.
+
+SonarCloud is optional: the workflow skips with a notice when `SONAR_TOKEN` is absent.
