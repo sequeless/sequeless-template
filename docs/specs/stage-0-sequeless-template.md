@@ -48,7 +48,7 @@ picks different names, use spec 1's names and update this table. Don't diverge.
 | Parent POM | `org.sequeless:sequeless-build-parent` (spec-01:42-48: not `sequeless-parent`, which is the prototype root's name), released version pinned (no SNAPSHOT on `main`) |
 | Read repository id / URL | `github` → `https://maven.pkg.github.com/sequeless/*`, credentials from `PACKAGES_READ_TOKEN` (org secret, #54) |
 | Deploy | The parent's `distributionManagement` (spec-01:218-227) deploys to `https://maven.pkg.github.com/sequeless/${sequeless.github.repository}`, with `GITHUB_TOKEN` (`packages: write`) from `maven-release.yml`. The template sets no `distributionManagement` of its own. |
-| Reusable workflows | `sequeless/sequeless-build/.github/workflows/maven-{ci,codeql,sonar,release}.yml` (spec-01:114-117), called with `secrets: inherit` and pinned to `@workflows-vX.Y.Z` (spec-01:313-314; Renovate's `github-actions` manager bumps the ref) |
+| Reusable workflows | `sequeless/sequeless-build/.github/workflows/maven-{ci,codeql,sonar,release}.yml` (spec-01:114-117), called with `secrets: inherit` and pinned to `@workflows-v0.1.1` (spec-01:313-314; Renovate's `github-actions` manager bumps the ref; the `vX.Y.Z` placeholder is not a valid ref and made every workflow fail at startup) |
 | Renovate preset | `github>sequeless/sequeless-build` (`default.json` at the repo root, spec-01:107-108; the preset is not versioned, spec-01:313-316) |
 | Core-module marker | whatever spec 1's parent uses to switch on the enforcer `bannedDependencies` (no Spring, Jena, Lombok) for a core module. `template-core` opts in. |
 | Library vs app | libraries get `--release 21` from the parent by default. An app module overrides it to 25 (#17 §1). |
@@ -122,7 +122,7 @@ None in existing code. The template ships the placeholder package `org.sequeless
 sequeless-template/
 ├── pom.xml               aggregator only: <packaging>pom</packaging>, <modules>, never released
 └── template-core/        placeholder library module
-    ├── pom.xml           <parent> = org.sequeless:sequeless-build-parent, pinned 0.1.0, <relativePath/>; module version 0.1.0-SNAPSHOT
+    ├── pom.xml           <parent> = org.sequeless:sequeless-build-parent, pinned 0.1.2, <relativePath/>; module version 0.1.0-SNAPSHOT
     └── src/
         ├── main/java/org/sequeless/template/{api,spi,internal}/package-info.java
         └── test/java/org/sequeless/template/BoundaryRulesTest.java
@@ -198,7 +198,7 @@ Repos with more than one module (kernel has two) add the rest by copying the ren
 
 | Workflow | Runs | Body |
 |---|---|---|
-| `ci.yml` | push to `main`, PRs | calls `maven-ci.yml` (JDK 25, `mvn verify`), then `maven-sonar.yml` with `sonar-organization: sequeless`, which skips without `SONAR_TOKEN`. No snapshot-deploy input: spec 1 has none, and the template publishes nothing. |
+| `ci.yml` | push to `main`, PRs | calls `maven-ci.yml` (JDK 25, `mvn verify`), and nothing else: the Sonar job was dropped, as in the prototype, because the SonarCloud app analyses PRs without it. No snapshot-deploy input: spec 1 has none, and the template publishes nothing. |
 | `codeql.yml` | push, PRs, weekly | calls `maven-codeql.yml` with `languages: java-kotlin` |
 | `release.yml` | push to `main` | calls `maven-release.yml` (release-please, then `-pl <released> -am deploy`). Permissions: `contents`, `pull-requests`, `packages: write`. Skipped in the template repo. |
 | `pr-title.yml` | PR opened, edited or synchronised | local: `npx commitlint` on the PR title. Not on #17's list of reusable workflows. Promote it to `sequeless-build` once two repos carry it unchanged. |
@@ -230,3 +230,13 @@ repo starts its ADR log at 0001.
 Plus: the repo is marked as a template; a throwaway repo created from it and initialised with
 `init-repo.sh` passes CI, then gets deleted; this spec file lives at
 `docs/specs/stage-0-sequeless-template.md` in the new repo.
+
+## Fix log (2026-10-31)
+
+The first CI runs on `main` all failed. Causes and fixes, found while closing spec 2:
+
+1. The workflows called `sequeless-build` at the placeholder ref `@workflows-vX.Y.Z`, which is not a valid ref, so `ci`, `codeql` and `release` failed at startup with no logs. They now pin `@workflows-v0.1.1`.
+2. `template-core` pinned `sequeless-build-parent` 0.1.0, which was never published to GitHub Packages. It now pins 0.1.2.
+3. `codeql.yml` passed `languages: java-kotlin`, but the reusable workflow runs `fromJSON` on the input. It now passes `'["java-kotlin"]'`.
+4. `dependency:analyze` failed because the boundary test imports `archunit` and `archunit-junit5-api`, while the parent only manages `archunit-junit5`. `template-core` now declares both, versioned by the parent's `archunit.version`. Spec 1 could manage them in the parent instead.
+5. The parent's Spotless check rejected `template-core/pom.xml` formatting. The file is now formatted to match.
