@@ -18,8 +18,9 @@ The init script renames the placeholders (`template-core`, `org.sequeless.templa
 - A canonical `BoundaryRulesTest` for the module layers (api, spi, internal).
 - A commitlint PR-title check and the agent docs under `docs/agents/`.
 
-Until `sequeless-build` makes its first release, the parent, workflows and Renovate preset
-cannot resolve, so CI stays red. That is expected (see docs/extraction in the prototype repo).
+The parent POM (`sequeless-build-parent` 0.1.3) and the reusable workflows (`workflows-v0.1.2`)
+come from released `sequeless-build` versions, and CI runs against them. Renovate moves both.
+The extraction plan is in `docs/extraction` in the prototype repo.
 
 ## Local setup
 
