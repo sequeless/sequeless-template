@@ -7,5 +7,6 @@ export default {
       'always',
       ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert'],
     ],
+    'subject-case': [2, 'never', ['start-case', 'pascal-case', 'upper-case']],
   },
 };
